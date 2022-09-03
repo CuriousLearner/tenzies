@@ -5,8 +5,10 @@
 body {
     margin: 0;
     background-color: #0B2434;
-    padding: 20px;
+    padding: 60px;
     font-family: 'Karla', sans-serif;
+    display: flex;
+    justify-content: center;
 }
 
 main {
