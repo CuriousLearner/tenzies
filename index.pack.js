@@ -417,15 +417,27 @@ var _reactConfetti2 = _interopRequireDefault(_reactConfetti);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function App() {
-  var _React$useState = _react2.default.useState(allNewDice()),
+  var _React$useState = _react2.default.useState(1),
       _React$useState2 = _slicedToArray(_React$useState, 2),
-      dice = _React$useState2[0],
-      setDice = _React$useState2[1];
+      numRolls = _React$useState2[0],
+      setNumRolls = _React$useState2[1];
 
-  var _React$useState3 = _react2.default.useState(false),
+  var _React$useState3 = _react2.default.useState(function () {
+    return parseInt(localStorage.getItem("bestNumRolls")) || 0;
+  }),
       _React$useState4 = _slicedToArray(_React$useState3, 2),
-      tenzies = _React$useState4[0],
-      setTenzies = _React$useState4[1];
+      bestNumRolls = _React$useState4[0],
+      setBestNumRolls = _React$useState4[1];
+
+  var _React$useState5 = _react2.default.useState(allNewDice()),
+      _React$useState6 = _slicedToArray(_React$useState5, 2),
+      dice = _React$useState6[0],
+      setDice = _React$useState6[1];
+
+  var _React$useState7 = _react2.default.useState(false),
+      _React$useState8 = _slicedToArray(_React$useState7, 2),
+      tenzies = _React$useState8[0],
+      setTenzies = _React$useState8[1];
 
   _react2.default.useEffect(function () {
     var allHeld = dice.every(function (die) {
@@ -463,7 +475,12 @@ function App() {
           return die.isHeld ? die : generateNewDie();
         });
       });
+      setNumRolls(function (prevNumRolls) {
+        return prevNumRolls + 1;
+      });
     } else {
+      // Set-up new game with first roll
+      setNumRolls(1);
       setTenzies(false);
       setDice(allNewDice());
     }
@@ -492,6 +509,13 @@ function App() {
     });
   });
 
+  _react2.default.useEffect(function () {
+    if (tenzies && (bestNumRolls === 0 || numRolls < bestNumRolls)) {
+      setBestNumRolls(numRolls);
+      localStorage.setItem("bestNumRolls", numRolls.toString());
+    }
+  }, [tenzies]);
+
   return _react2.default.createElement(
     "main",
     null,
@@ -500,6 +524,22 @@ function App() {
       "h1",
       { className: "title" },
       "Tenzies"
+    ),
+    _react2.default.createElement(
+      "div",
+      { className: "stats" },
+      _react2.default.createElement(
+        "div",
+        { className: "num-rolls" },
+        "Number of Rolls: ",
+        numRolls
+      ),
+      _react2.default.createElement(
+        "div",
+        { className: "best-num-rolls" },
+        "Best number of winning rolls: ",
+        bestNumRolls
+      )
     ),
     _react2.default.createElement(
       "p",

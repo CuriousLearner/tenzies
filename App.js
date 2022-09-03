@@ -4,6 +4,12 @@ import { nanoid } from "nanoid";
 import Confetti from "react-confetti";
 
 export default function App() {
+  const [numRolls, setNumRolls] = React.useState(1);
+
+  const [bestNumRolls, setBestNumRolls] = React.useState(
+    () => parseInt(localStorage.getItem("bestNumRolls")) || 0
+  );
+
   const [dice, setDice] = React.useState(allNewDice());
   const [tenzies, setTenzies] = React.useState(false);
 
@@ -39,7 +45,10 @@ export default function App() {
           return die.isHeld ? die : generateNewDie();
         })
       );
+      setNumRolls((prevNumRolls) => prevNumRolls + 1);
     } else {
+      // Set-up new game with first roll
+      setNumRolls(1);
       setTenzies(false);
       setDice(allNewDice());
     }
@@ -66,12 +75,25 @@ export default function App() {
     />
   ));
 
+  React.useEffect(() => {
+    if (tenzies && (bestNumRolls === 0 || numRolls < bestNumRolls)) {
+      setBestNumRolls(numRolls);
+      localStorage.setItem("bestNumRolls", numRolls.toString());
+    }
+  }, [tenzies]);
+
   return (
     <main>
       {tenzies && (
         <Confetti width={window.innerWidth} height={window.innerHeight} />
       )}
       <h1 className="title">Tenzies</h1>
+      <div className="stats">
+        <div className="num-rolls">Number of Rolls: {numRolls}</div>
+        <div className="best-num-rolls">
+          Best number of winning rolls: {bestNumRolls}
+        </div>
+      </div>
       <p className="instructions">
         Roll until all dice are the same. Click each die to freeze it at its
         current value between rolls.
