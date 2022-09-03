@@ -470,6 +470,10 @@ function App() {
   }
 
   function _holdDice(id) {
+    if (tenzies) {
+      // Game already won, don't allow change in state
+      return;
+    }
     setDice(function (oldDice) {
       return oldDice.map(function (die) {
         return die.id === id ? _extends({}, die, { isHeld: !die.isHeld }) : die;
