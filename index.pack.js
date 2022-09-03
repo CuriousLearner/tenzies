@@ -414,6 +414,8 @@ var _reactConfetti = __webpack_require__(10);
 
 var _reactConfetti2 = _interopRequireDefault(_reactConfetti);
 
+var _useElapsedTime2 = __webpack_require__(20);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function App() {
@@ -429,15 +431,27 @@ function App() {
       bestNumRolls = _React$useState4[0],
       setBestNumRolls = _React$useState4[1];
 
-  var _React$useState5 = _react2.default.useState(allNewDice()),
+  var _React$useState5 = _react2.default.useState(0),
       _React$useState6 = _slicedToArray(_React$useState5, 2),
-      dice = _React$useState6[0],
-      setDice = _React$useState6[1];
+      completionTime = _React$useState6[0],
+      setCompletionTime = _React$useState6[1];
 
-  var _React$useState7 = _react2.default.useState(false),
+  var _React$useState7 = _react2.default.useState(function () {
+    return parseInt(localStorage.getItem("bestTime")) || "-";
+  }),
       _React$useState8 = _slicedToArray(_React$useState7, 2),
-      tenzies = _React$useState8[0],
-      setTenzies = _React$useState8[1];
+      bestTime = _React$useState8[0],
+      setBestTime = _React$useState8[1];
+
+  var _React$useState9 = _react2.default.useState(allNewDice()),
+      _React$useState10 = _slicedToArray(_React$useState9, 2),
+      dice = _React$useState10[0],
+      setDice = _React$useState10[1];
+
+  var _React$useState11 = _react2.default.useState(false),
+      _React$useState12 = _slicedToArray(_React$useState11, 2),
+      tenzies = _React$useState12[0],
+      setTenzies = _React$useState12[1];
 
   _react2.default.useEffect(function () {
     var allHeld = dice.every(function (die) {
@@ -510,11 +524,26 @@ function App() {
   });
 
   _react2.default.useEffect(function () {
-    if (tenzies && (bestNumRolls === 0 || numRolls < bestNumRolls)) {
-      setBestNumRolls(numRolls);
-      localStorage.setItem("bestNumRolls", numRolls.toString());
+    if (tenzies) {
+      if (bestNumRolls === 0 || numRolls < bestNumRolls) {
+        setBestNumRolls(numRolls);
+        localStorage.setItem("bestNumRolls", numRolls.toString());
+      }
+      if (bestTime === "-" || elapsedTime < bestTime) {
+        setBestTime(elapsedTime);
+        localStorage.setItem("bestTime", elapsedTime);
+      }
     }
   }, [tenzies]);
+
+  var _useElapsedTime = (0, _useElapsedTime2.useElapsedTime)({
+    isPlaying: true,
+    updateInterval: 1,
+    onUpdate: function onUpdate(elapsedTime) {
+      if (!tenzies) setCompletionTime(elapsedTime);
+    }
+  }),
+      elapsedTime = _useElapsedTime.elapsedTime;
 
   return _react2.default.createElement(
     "main",
@@ -527,18 +556,48 @@ function App() {
     ),
     _react2.default.createElement(
       "div",
-      { className: "stats" },
+      { className: "stats-container" },
       _react2.default.createElement(
-        "div",
+        "span",
         { className: "num-rolls" },
-        "Number of Rolls: ",
+        "Number of Rolls: "
+      ),
+      _react2.default.createElement(
+        "span",
+        { className: "num-rolls-value" },
         numRolls
       ),
       _react2.default.createElement(
-        "div",
+        "span",
         { className: "best-num-rolls" },
-        "Best number of winning rolls: ",
+        "Best number of winning rolls: "
+      ),
+      _react2.default.createElement(
+        "span",
+        { className: "best-num-rolls-value" },
         bestNumRolls
+      ),
+      _react2.default.createElement(
+        "span",
+        { className: "elapsed-time" },
+        "Elapsed Time: "
+      ),
+      _react2.default.createElement(
+        "span",
+        { className: "elapsed-time-value" },
+        tenzies ? completionTime : elapsedTime,
+        " seconds"
+      ),
+      _react2.default.createElement(
+        "span",
+        { className: "best-time" },
+        "Best time: "
+      ),
+      _react2.default.createElement(
+        "span",
+        { className: "best-time-value" },
+        bestTime,
+        " seconds"
       )
     ),
     _react2.default.createElement(
@@ -30815,6 +30874,18 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
+
+/***/ }),
+/* 20 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "useElapsedTime", function() { return V; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_react__);
+var E=typeof window=="undefined"?__WEBPACK_IMPORTED_MODULE_0_react__["useEffect"]:__WEBPACK_IMPORTED_MODULE_0_react__["useLayoutEffect"];var V=({isPlaying:s,duration:e,startAt:c=0,updateInterval:m=0,onComplete:p,onUpdate:f})=>{let[i,R]=__webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_react__["useState"])(c),T=__webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_react__["useRef"])(0),b=__webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_react__["useRef"])(c),x=__webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_react__["useRef"])(c*-1e3),t=__webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_react__["useRef"])(null),o=__webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_react__["useRef"])(null),d=__webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_react__["useRef"])(null),l=n=>{let r=n/1e3;if(o.current===null){o.current=r,t.current=requestAnimationFrame(l);return}let y=r-o.current,a=T.current+y;o.current=r,T.current=a;let q=b.current+(m===0?a:(a/m|0)*m),F=b.current+a,h=typeof e=="number"&&F>=e;R(h?e:q),h||(t.current=requestAnimationFrame(l))},A=()=>{t.current&&cancelAnimationFrame(t.current),d.current&&clearTimeout(d.current),o.current=null},S=__webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_react__["useCallback"])(n=>{A(),T.current=0;let r=typeof n=="number"?n:c;b.current=r,R(r),s&&(t.current=requestAnimationFrame(l))},[s,c]);return E(()=>{if(f==null||f(i),e&&i>=e){x.current+=e*1e3;let{shouldRepeat:n=!1,delay:r=0,newStartAt:y}=(p==null?void 0:p(x.current/1e3))||{};n&&(d.current=setTimeout(()=>S(y),r*1e3))}},[i,e]),E(()=>(s&&(t.current=requestAnimationFrame(l)),A),[s,e,m]),{elapsedTime:i,reset:S}};
+
 
 /***/ })
 /******/ ]);

@@ -1,19 +1,20 @@
 {
   "name": "tenzies",
   "dependencies": {
-    "react": "17.0.2",
-    "react-dom": "17.0.2",
     "nanoid": "3.1.28",
-    "react-confetti": "6.0.1"
+    "react": "17.0.2",
+    "react-confetti": "6.0.1",
+    "react-dom": "17.0.2",
+    "use-elapsed-time": "^3.0.4"
   },
   "devDependencies": {
-    "webpack": "^2.0",
     "babel-core": "^6.0",
     "babel-loader": "^7.0",
     "babel-preset-env": "*",
+    "babel-preset-es2015": "*",
     "babel-preset-react": "*",
     "babel-preset-stage-0": "*",
-    "babel-preset-es2015": "*"
+    "webpack": "^2.0"
   },
   "scripts": {
     "build": "webpack",

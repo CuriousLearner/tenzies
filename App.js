@@ -2,12 +2,16 @@ import React from "react";
 import Die from "./Die";
 import { nanoid } from "nanoid";
 import Confetti from "react-confetti";
+import { useElapsedTime } from "use-elapsed-time";
 
 export default function App() {
   const [numRolls, setNumRolls] = React.useState(1);
-
   const [bestNumRolls, setBestNumRolls] = React.useState(
     () => parseInt(localStorage.getItem("bestNumRolls")) || 0
+  );
+  const [completionTime, setCompletionTime] = React.useState(0);
+  const [bestTime, setBestTime] = React.useState(
+    () => parseInt(localStorage.getItem("bestTime")) || "-"
   );
 
   const [dice, setDice] = React.useState(allNewDice());
@@ -76,11 +80,25 @@ export default function App() {
   ));
 
   React.useEffect(() => {
-    if (tenzies && (bestNumRolls === 0 || numRolls < bestNumRolls)) {
-      setBestNumRolls(numRolls);
-      localStorage.setItem("bestNumRolls", numRolls.toString());
+    if (tenzies) {
+      if (bestNumRolls === 0 || numRolls < bestNumRolls) {
+        setBestNumRolls(numRolls);
+        localStorage.setItem("bestNumRolls", numRolls.toString());
+      }
+      if (bestTime === "-" || elapsedTime < bestTime) {
+        setBestTime(elapsedTime);
+        localStorage.setItem("bestTime", elapsedTime);
+      }
     }
   }, [tenzies]);
+
+  const { elapsedTime } = useElapsedTime({
+    isPlaying: true,
+    updateInterval: 1,
+    onUpdate: (elapsedTime) => {
+      if (!tenzies) setCompletionTime(elapsedTime);
+    },
+  });
 
   return (
     <main>
@@ -88,11 +106,18 @@ export default function App() {
         <Confetti width={window.innerWidth} height={window.innerHeight} />
       )}
       <h1 className="title">Tenzies</h1>
-      <div className="stats">
-        <div className="num-rolls">Number of Rolls: {numRolls}</div>
-        <div className="best-num-rolls">
-          Best number of winning rolls: {bestNumRolls}
-        </div>
+      <div className="stats-container">
+        <span className="num-rolls">Number of Rolls: </span>
+        <span className="num-rolls-value">{numRolls}</span>
+        <span className="best-num-rolls">Best number of winning rolls: </span>
+        <span className="best-num-rolls-value">{bestNumRolls}</span>
+
+        <span className="elapsed-time">Elapsed Time: </span>
+        <span className="elapsed-time-value">
+          {tenzies ? completionTime : elapsedTime} seconds
+        </span>
+        <span className="best-time">Best time: </span>
+        <span className="best-time-value">{bestTime} seconds</span>
       </div>
       <p className="instructions">
         Roll until all dice are the same. Click each die to freeze it at its
