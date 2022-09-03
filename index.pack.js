@@ -583,14 +583,17 @@ function Die(props) {
   var styles = {
     backgroundColor: props.isHeld ? "#59E391" : "white"
   };
+  var Pip = function Pip() {
+    return _react2.default.createElement("span", { className: "pip" });
+  };
+
+  var pips = Number.isInteger(props.value) ? Array(props.value).fill(0).map(function (_, i) {
+    return _react2.default.createElement(Pip, { key: i });
+  }) : null;
   return _react2.default.createElement(
     "div",
     { className: "die-face", style: styles, onClick: props.holdDice },
-    _react2.default.createElement(
-      "h2",
-      { className: "die-num" },
-      props.value
-    )
+    pips
   );
 }
 
