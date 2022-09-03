@@ -495,7 +495,7 @@ function App() {
   return _react2.default.createElement(
     "main",
     null,
-    tenzies && _react2.default.createElement(_reactConfetti2.default, null),
+    tenzies && _react2.default.createElement(_reactConfetti2.default, { width: window.innerWidth, height: window.innerHeight }),
     _react2.default.createElement(
       "h1",
       { className: "title" },
